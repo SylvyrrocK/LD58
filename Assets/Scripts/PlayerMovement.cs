@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player Setings")]
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float jumpHeight = 5f;
+
+    [Header("Dash Settings")]
+    public float dashSpeed = 15f;
+    public float dashDuration = 0.4f;
+    public float dashCooldown = 0.5f;
+
+    private bool isDashing = false;
+    private bool canDash = true;
+
+    [SerializeField] private TrailRenderer dashTrail;
 
     [Header("Grounding")]
     [SerializeField] LayerMask groundLayer;
@@ -26,21 +37,48 @@ public class PlayerMovement : MonoBehaviour
         playerRb.linearVelocity = new Vector2(horizontal * moveSpeed, playerRb.linearVelocityY);
     }
 
-    public void onMove(InputAction.CallbackContext context)
+    public void OnMove(InputAction.CallbackContext context)
     {
         horizontal = context.ReadValue<Vector2>().x;
     }
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if(context.performed && IsGrounded())
         {
-             playerRb.linearVelocity = new Vector2(playerRb.linearVelocityX, jumpHeight);  
+            Debug.Log("Jump");
+            playerRb.linearVelocity = new Vector2(playerRb.linearVelocityX, jumpHeight);  
         }
     }
 
-    private bool isGrounded()
+    public void Dash(InputAction.CallbackContext context)
     {
-        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.9f, 0.1f), CapsuleDirection2D.Horizontal, 0, groundLayer);
+        if(context.performed && canDash && !isDashing)
+        {
+            Debug.Log("Dash");
+            StartCoroutine(Dash());
+        }
+    }
+
+    private IEnumerator Dash()
+    {
+        canDash = false;
+        isDashing = true;
+        float originalGravity = playerRb.gravityScale;
+        playerRb.gravityScale = 0;
+        //FIX MOVEMENT
+        playerRb.linearVelocity = new Vector2(transform.localScale.x * dashSpeed, 0f);
+        dashTrail.emitting = true;
+        yield return new WaitForSeconds(dashDuration);
+        dashTrail.emitting = false;
+        isDashing = false;
+        playerRb.gravityScale = originalGravity;
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.1f, 0.5f), CapsuleDirection2D.Horizontal, 0, groundLayer);
     }
 }
