@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float jumpHeight = 5f;
 
+    private Vector2 startPosition;
+
     [Header("Dash Settings")]
     public float dashSpeed = 15f;
     public float dashDuration = 0.4f;
@@ -30,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody2D>();
+        
+        startPosition = transform.position; 
     }
 
     void FixedUpdate()
@@ -80,5 +84,12 @@ public class PlayerMovement : MonoBehaviour
     private bool IsGrounded()
     {
         return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.1f, 0.5f), CapsuleDirection2D.Horizontal, 0, groundLayer);
+    }
+
+    public void OnSpike()
+    {
+        Debug.Log("Player hit spikes! Restarting level...");
+        transform.position = startPosition; // Reset player position to origin
+        // Here you can add logic to reduce player health or restart the level
     }
 }
