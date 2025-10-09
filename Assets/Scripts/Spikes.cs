@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Spikes : MonoBehaviour
 {
+    [SerializeField] private float damageAmount = 1f; // Amount of damage spikes deal
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -10,11 +11,10 @@ public class Spikes : MonoBehaviour
             var healthComponent = collision.collider.GetComponent<PlayerStats>();
             if (healthComponent != null)
             {
-                healthComponent.TakeDamage(1f); // Assuming spikes deal 1 damage
+                healthComponent.TakeDamage(damageAmount);
                 Debug.Log("Curremt player health: " + healthComponent.currentHealth);
             }
-            Debug.Log("Player hit spikes!");
-            // Here you can add logic to reduce player health or restart the level
+            Debug.Log("Player got damaged for " + damageAmount + " HP");
         }
     }
 }
