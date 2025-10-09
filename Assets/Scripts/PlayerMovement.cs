@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
         isDashing = true;
         float originalGravity = playerRb.gravityScale;
         playerRb.gravityScale = 0;
-        //FIX MOVEMENT
+        //TODO: FIX MOVEMENT
         playerRb.linearVelocity = new Vector2(transform.localScale.x * dashSpeed, 0f);
         dashTrail.emitting = true;
         yield return new WaitForSeconds(dashDuration);
@@ -90,6 +90,5 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.Log("Player hit spikes! Restarting level...");
         transform.position = startPosition; // Reset player position to origin
-        // Here you can add logic to reduce player health or restart the level
     }
 }
