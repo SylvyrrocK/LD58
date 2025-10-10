@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 5098375989128950178}
   - component: {fileID: 5051340241409666410}
   - component: {fileID: 8528477437327554051}
+  - component: {fileID: -6720465228845271737}
+  - component: {fileID: 9071040999186630806}
   m_Layer: 0
   m_Name: MedKit
   m_TagString: Untagged
@@ -81,7 +83,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4606908045521496030, guid: d5040264363b7224587f1f1a7d4aca31, type: 3}
+  m_Sprite: {fileID: -4195582761621981391, guid: d5040264363b7224587f1f1a7d4aca31, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -143,7 +145,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.9375, y: 0.9375}
+    oldSize: {x: 1.0625, y: 1}
     newSize: {x: 0.9375, y: 0.9375}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -151,3 +153,39 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.83471197, y: 0.8234328}
   m_EdgeRadius: 0
+--- !u!114 &-6720465228845271737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4525469261067507132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa862375387dc9e4ea3220728b031f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FloatingEffect
+  animationSpeed: 1
+  amplitude: 0.05
+--- !u!95 &9071040999186630806
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4525469261067507132}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2d5a9a46024138549b47a9913e2509d4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
