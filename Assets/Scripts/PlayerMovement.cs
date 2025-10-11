@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] int additionalJumps = 1;
     int jumpCount = 0;
 
+    [SerializeField] float damageIndicatorDuration = 0.3f;
+
     [SerializeField] float coyoteTime = 0.2f;
     private float coyoteTimeCounter;
 
@@ -113,6 +115,7 @@ public class PlayerMovement : MonoBehaviour
         playerRb.linearVelocity = new Vector2(transform.localScale.x * dashSpeed, 0f);
         dashTrail.emitting = true;
         yield return new WaitForSeconds(dashDuration);
+
         dashTrail.emitting = false;
         isDashing = false;
         playerRb.gravityScale = originalGravity;
@@ -133,11 +136,10 @@ public class PlayerMovement : MonoBehaviour
         StartCoroutine(OnSpikeCoroutine());
     }
 
-    //  TODO: Fix Coroutine
     public IEnumerator OnSpikeCoroutine()
     {
         spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(damageIndicatorDuration);
         spriteRenderer.color = Color.white;
     }
 }
