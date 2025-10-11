@@ -10,6 +10,15 @@ public class PlayerMovement : MonoBehaviour
     [Header("Player Setings")]
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float jumpHeight = 5f;
+    [SerializeField] int additionalJumps = 1;
+    int jumpCount = 0;
+
+    [SerializeField] float coyoteTime = 0.2f;
+    private float coyoteTimeCounter;
+
+    // ADD LATER
+    //[SerializeField] float jumpBufferTime = 0.2f;
+    //private float jumpBufferCounter;
 
     private Vector2 startPosition;
 
@@ -22,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private bool canDash = true;
 
     [SerializeField] private TrailRenderer dashTrail;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     [Header("Grounding")]
     [SerializeField] LayerMask groundLayer;
@@ -32,12 +42,23 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         playerRb = GetComponent<Rigidbody2D>();
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         startPosition = transform.position; 
     }
 
     void FixedUpdate()
     {
+        if (IsGrounded())
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+        //Debug.Log("Coyote Time Counter: " + coyoteTimeCounter);
+
         playerRb.linearVelocity = new Vector2(horizontal * moveSpeed, playerRb.linearVelocityY);
     }
 
@@ -48,11 +69,28 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        if(context.performed && IsGrounded())
+        if (context.performed && coyoteTimeCounter > 0f)
         {
-            Debug.Log("Jump");
-            playerRb.linearVelocity = new Vector2(playerRb.linearVelocityX, jumpHeight);  
+            jumpCount = 0;
+            coyoteTimeCounter = 0f;
+            DoJump();
         }
+        else if (context.performed && jumpCount < additionalJumps)
+        {
+            jumpCount++;
+            DoJump();
+        }
+
+        if (context.canceled && playerRb.linearVelocityY > 0)
+        {
+            playerRb.linearVelocity = new Vector2(playerRb.linearVelocityX, playerRb.linearVelocityY * 0.5f);
+            Debug.Log("Jump " + (jumpCount + 1));
+        }
+    }
+
+    void DoJump()
+    {
+        playerRb.linearVelocity = new Vector2(playerRb.linearVelocityX, jumpHeight);
     }
 
     public void Dash(InputAction.CallbackContext context)
@@ -70,7 +108,8 @@ public class PlayerMovement : MonoBehaviour
         isDashing = true;
         float originalGravity = playerRb.gravityScale;
         playerRb.gravityScale = 0;
-        //TODO: FIX MOVEMENT
+        //  TODO: FIX DASH SIDE MOVEMENT
+
         playerRb.linearVelocity = new Vector2(transform.localScale.x * dashSpeed, 0f);
         dashTrail.emitting = true;
         yield return new WaitForSeconds(dashDuration);
@@ -81,6 +120,7 @@ public class PlayerMovement : MonoBehaviour
         canDash = true;
     }
 
+    //  REDO IN HUMAN WAY
     private bool IsGrounded()
     {
         return Physics2D.OverlapCapsule(groundCheck.position, new Vector2(0.1f, 0.5f), CapsuleDirection2D.Horizontal, 0, groundLayer);
@@ -90,5 +130,14 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.Log("Player hit spikes! Restarting level...");
         transform.position = startPosition; // Reset player position to origin
+        StartCoroutine(OnSpikeCoroutine());
+    }
+
+    //  TODO: Fix Coroutine
+    public IEnumerator OnSpikeCoroutine()
+    {
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.3f);
+        spriteRenderer.color = Color.white;
     }
 }
